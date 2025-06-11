@@ -5,7 +5,7 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { config } from "dotenv";
 
-config({ path: ".env.local" });
+config({ path: ".env" });
 
 const sql = neon(process.env.DATABASE_URL!);
 export const db = drizzle({ client: sql });
@@ -16,11 +16,7 @@ const imagekit = new ImageKit({
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY!,
 });
 
-const uploadToImageKit = async (
-  url: string,
-  fileName: string,
-  folder: string,
-) => {
+const uploadToImageKit = async (url: string, fileName: string, folder: string) => {
   try {
     const response = await imagekit.upload({
       file: url,
@@ -39,17 +35,9 @@ const seed = async () => {
 
   try {
     for (const book of dummyBooks) {
-      const coverUrl = (await uploadToImageKit(
-        book.coverUrl,
-        `${book.title}.jpg`,
-        "/books/covers",
-      )) as string;
+      const coverUrl = (await uploadToImageKit(book.coverUrl, `${book.title}.jpg`, "/books/covers")) as string;
 
-      const videoUrl = (await uploadToImageKit(
-        book.videoUrl,
-        `${book.title}.mp4`,
-        "/books/videos",
-      )) as string;
+      const videoUrl = (await uploadToImageKit(book.videoUrl, `${book.title}.mp4`, "/books/videos")) as string;
 
       await db.insert(books).values({
         ...book,

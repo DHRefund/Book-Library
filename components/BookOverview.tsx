@@ -22,19 +22,16 @@ const BookOverview = async ({
   id,
   userId,
 }: Props) => {
-  const [user] = await db
-    .select()
-    .from(users)
-    .where(eq(users.id, userId))
-    .limit(1);
+  const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+  console.log(user.status);
+  console.log(availableCopies);
+  console.log(availableCopies > 0 && user?.status === "APPROVED");
 
   const borrowingEligibility = {
     isEligible: availableCopies > 0 && user?.status === "APPROVED",
-    message:
-      availableCopies <= 0
-        ? "Book is not available"
-        : "You are not eligible to borrow this book",
+    message: availableCopies <= 0 ? "Book is not available" : "You are not eligible to borrow this book",
   };
+
   return (
     <section className="book-overview">
       <div className="flex flex-1 flex-col gap-5">
@@ -46,8 +43,7 @@ const BookOverview = async ({
           </p>
 
           <p>
-            Category{" "}
-            <span className="font-semibold text-light-200">{genre}</span>
+            Category <span className="font-semibold text-light-200">{genre}</span>
           </p>
 
           <div className="flex flex-row gap-1">
@@ -68,30 +64,15 @@ const BookOverview = async ({
 
         <p className="book-description">{description}</p>
 
-        {user && (
-          <BorrowBook
-            bookId={id}
-            userId={userId}
-            borrowingEligibility={borrowingEligibility}
-          />
-        )}
+        {user && <BorrowBook bookId={id} userId={userId} borrowingEligibility={borrowingEligibility} />}
       </div>
 
       <div className="relative flex flex-1 justify-center">
         <div className="relative">
-          <BookCover
-            variant="wide"
-            className="z-10"
-            coverColor={coverColor}
-            coverImage={coverUrl}
-          />
+          <BookCover variant="wide" className="z-10" coverColor={coverColor} coverImage={coverUrl} />
 
           <div className="absolute left-16 top-10 rotate-12 opacity-40 max-sm:hidden">
-            <BookCover
-              variant="wide"
-              coverColor={coverColor}
-              coverImage={coverUrl}
-            />
+            <BookCover variant="wide" coverColor={coverColor} coverImage={coverUrl} />
           </div>
         </div>
       </div>

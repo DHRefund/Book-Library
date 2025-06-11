@@ -12,11 +12,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const session = await auth();
 
   // Fetch data based on id
-  const [bookDetails] = await db
-    .select()
-    .from(books)
-    .where(eq(books.id, id))
-    .limit(1);
+  const [bookDetails] = await db.select().from(books).where(eq(books.id, id)).limit(1);
 
   if (!bookDetails) redirect("/404");
 

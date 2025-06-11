@@ -11,9 +11,7 @@ import { redirect } from "next/navigation";
 import { workflowClient } from "@/lib/workflow";
 import config from "@/lib/config";
 
-export const signInWithCredentials = async (
-  params: Pick<AuthCredentials, "email" | "password">,
-) => {
+export const signInWithCredentials = async (params: Pick<AuthCredentials, "email" | "password">) => {
   const { email, password } = params;
 
   const ip = (await headers()).get("x-forwarded-for") || "127.0.0.1";
@@ -47,11 +45,7 @@ export const signUp = async (params: AuthCredentials) => {
 
   if (!success) return redirect("/too-fast");
 
-  const existingUser = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
+  const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
   if (existingUser.length > 0) {
     return { success: false, error: "User already exists" };
